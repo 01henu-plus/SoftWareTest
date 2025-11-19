@@ -1,0 +1,16 @@
+{
+  "id": "test-environment",
+  "name": "测试环境",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "http://example.com",
+      "enabled": true
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "enabled": true
+    }
+  ]
+}

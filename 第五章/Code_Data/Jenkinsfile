@@ -1,0 +1,137 @@
+pipeline {
+    agent any
+    
+    environment {
+        // 配置测试环境 URL，可在 Jenkins 中设置或从参数传入
+        UI_BASE_URL = "${env.UI_BASE_URL ?: 'http://example.com/login'}"
+        API_BASE_URL = "${env.API_BASE_URL ?: 'http://example.com'}"
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo '拉取代码...'
+                checkout scm
+            }
+        }
+        
+        stage('Setup Environment') {
+            steps {
+                echo '安装 Python 依赖...'
+                bat '''
+                    python --version
+                    pip install -r Code_Data/requirements.txt
+                    pip install newman-reporter-junitfull
+                '''
+            }
+        }
+        
+        stage('Run API Tests') {
+            steps {
+                echo '执行 API 自动化测试（Requests）...'
+                bat '''
+                    set API_BASE_URL=%API_BASE_URL%
+                    pytest Code_Data/tests/test_api_login.py --junitxml=api-test-results.xml --html=api-test-report.html --self-contained-html -v
+                '''
+            }
+        }
+        
+        stage('Run UI Tests') {
+            steps {
+                echo '执行 UI 自动化测试（Selenium）...'
+                bat '''
+                    set UI_BASE_URL=%UI_BASE_URL%
+                    pytest Code_Data/tests/login_ui_test.py --junitxml=ui-test-results.xml --html=ui-test-report.html --self-contained-html -v
+                '''
+            }
+        }
+        
+        stage('Run Postman Tests') {
+            when {
+                expression { fileExists('Code_Data/postman/login_api_collection.json') }
+            }
+            steps {
+                echo '执行 Postman API 测试（Newman）...'
+                bat '''
+                    newman run Code_Data/postman/login_api_collection.json -e Code_Data/postman/environment.json --reporters cli,junitfull --reporter-junitfull-export newman-results.xml
+                '''
+            }
+        }
+        
+        stage('Generate Coverage Report') {
+            steps {
+                echo '生成测试覆盖率报告...'
+                bat '''
+                    pytest Code_Data/tests/ --cov=Code_Data --cov-report=html:htmlcov --cov-report=xml:coverage.xml --junitxml=all-test-results.xml
+                '''
+            }
+        }
+        
+        stage('Archive Results') {
+            steps {
+                echo '归档测试报告...'
+                junit '*-test-results.xml'
+                publishHTML([
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: '.',
+                    reportFiles: 'api-test-report.html,ui-test-report.html',
+                    reportName: 'Test Reports'
+                ])
+                publishHTML([
+                    allowMissing: true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'htmlcov',
+                    reportFiles: 'index.html',
+                    reportName: 'Coverage Report'
+                ])
+            }
+        }
+        
+        stage('Sync to TestLink') {
+            steps {
+                echo '同步测试结果到 TestLink...'
+                bat '''
+                    python Code_Data/scripts/sync_to_testlink.py --results all-test-results.xml
+                '''
+            }
+        }
+        
+        stage('Create Jira Issues') {
+            when {
+                expression { currentBuild.result == 'FAILURE' || currentBuild.result == 'UNSTABLE' }
+            }
+            steps {
+                echo '为失败的测试创建 Jira 缺陷...'
+                bat '''
+                    python Code_Data/scripts/create_jira_issues.py --results all-test-results.xml
+                '''
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo '清理工作区...'
+            cleanWs(cleanWhenNotBuilt: false, deleteDirs: true)
+        }
+        success {
+            echo '所有测试通过！'
+            emailext (
+                subject: "Jenkins 构建成功: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "所有自动化测试已通过。详情请查看: ${env.BUILD_URL}",
+                to: "${env.NOTIFICATION_EMAIL ?: 'team@example.com'}"
+            )
+        }
+        failure {
+            echo '测试失败，请检查报告。'
+            emailext (
+                subject: "Jenkins 构建失败: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "自动化测试失败。详情请查看: ${env.BUILD_URL}",
+                to: "${env.NOTIFICATION_EMAIL ?: 'team@example.com'}"
+            )
+        }
+    }
+}

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="1" tests="1" time="20.800" timestamp="2025-11-14T14:27:40.933154+08:00" hostname="wmj"><testcase classname="tests.login_ui_test" name="test_login_ui_success" time="17.313"><skipped type="pytest.skip" message="跳过 UI 断言（可能找不到元素或未配置真实页面）：Message: no such element: Unable to locate element: {&quot;method&quot;:&quot;css selector&quot;,&quot;selector&quot;:&quot;[name=&quot;username&quot;]&quot;}&#10;  (Session info: chrome=138.0.7204.184); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception&#10;Stacktrace:&#10;&#09;GetHandleVerifier [0x0xb7ba83+63395]&#10;&#09;GetHandleVerifier [0x0xb7bac4+63460]&#10;&#09;(No symbol) [0x0x9c2113]&#10;&#09;(No symbol) [0x0xa0a85e]&#10;&#09;(No symbol) [0x0xa0abfb]&#10;&#09;(No symbol) [0x0xa52f92]&#10;&#09;(No symbol) [0x0xa2f3f4]&#10;&#09;(No symbol) [0x0xa507ba]&#10;&#09;(No symbol) [0x0xa2f1a6]&#10;&#09;(No symbol) [0x0x9fe7b2]&#10;&#09;(No symbol) [0x0x9ff654]&#10;&#09;GetHandleVerifier [0x0xdf8883+2672035]&#10;&#09;GetHandleVerifier [0x0xdf3cba+2652634]&#10;&#09;GetHandleVerifier [0x0xba2bca+223466]&#10;&#09;GetHandleVerifier [0x0xb92cb8+158168]&#10;&#09;GetHandleVerifier [0x0xb9978d+185517]&#10;&#09;GetHandleVerifier [0x0xb83b78+96408]&#10;&#09;GetHandleVerifier [0x0xb83d02+96802]&#10;&#09;GetHandleVerifier [0x0xb6e90a+9770]&#10;&#09;BaseThreadInitThunk [0x0x76d75d49+25]&#10;&#09;RtlInitializeExceptionChain [0x0x77d3d1ab+107]&#10;&#09;RtlGetAppContainerNamedObjectPath [0x0x77d3d131+561]">C:\Users\28298\Desktop\HomeWork_Data\软件测试作业\第五章\Code_Data\tests\login_ui_test.py:52: 跳过 UI 断言（可能找不到元素或未配置真实页面）：Message: no such element: Unable to locate element: {"method":"css selector","selector":"[name="username"]"}
+  (Session info: chrome=138.0.7204.184); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+	GetHandleVerifier [0x0xb7ba83+63395]
+	GetHandleVerifier [0x0xb7bac4+63460]
+	(No symbol) [0x0x9c2113]
+	(No symbol) [0x0xa0a85e]
+	(No symbol) [0x0xa0abfb]
+	(No symbol) [0x0xa52f92]
+	(No symbol) [0x0xa2f3f4]
+	(No symbol) [0x0xa507ba]
+	(No symbol) [0x0xa2f1a6]
+	(No symbol) [0x0x9fe7b2]
+	(No symbol) [0x0x9ff654]
+	GetHandleVerifier [0x0xdf8883+2672035]
+	GetHandleVerifier [0x0xdf3cba+2652634]
+	GetHandleVerifier [0x0xba2bca+223466]
+	GetHandleVerifier [0x0xb92cb8+158168]
+	GetHandleVerifier [0x0xb9978d+185517]
+	GetHandleVerifier [0x0xb83b78+96408]
+	GetHandleVerifier [0x0xb83d02+96802]
+	GetHandleVerifier [0x0xb6e90a+9770]
+	BaseThreadInitThunk [0x0x76d75d49+25]
+	RtlInitializeExceptionChain [0x0x77d3d1ab+107]
+	RtlGetAppContainerNamedObjectPath [0x0x77d3d131+561]</skipped></testcase></testsuite></testsuites>
