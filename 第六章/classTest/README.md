@@ -1,126 +1,77 @@
-# 座位锁定系统 - 课堂案例
+# 座位锁定系统测试
 
-## 项目说明
-实现一个简单的座位锁定系统，用于演示 pytest 测试框架的使用。
+## 项目简介
+简洁的座位锁定系统，支持座位锁定、解锁和超时自动释放功能。
 
 ## 功能特性
-- ✅ 座位锁定功能
-- ✅ 座位解锁功能
-- ✅ 锁定超时检查
-- ✅ 多座位管理
+- **座位锁定**: 支持多用户锁定不同座位
+- **超时管理**: 60秒自动释放（可配置）
+- **冲突检测**: 防止重复锁定
+- **自动清理**: 过期锁自动删除
 
-## 项目结构
+## 文件结构
 ```
-classTest/
-├── venv/                  # Python 虚拟环境
-├── app/                   # 应用代码
-│   ├── __init__.py
-│   └── seat_lock.py      # 座位锁定系统类
-├── tests/                 # 测试代码
-│   ├── __init__.py
-│   └── test_seat_lock.py # 测试脚本
-├── requirements.txt       # 依赖清单
-├── pytest.ini            # pytest 配置
-└── README.md             # 本文件
-```
-
-## 环境配置
-
-### 1. 创建虚拟环境
-```bash
-python -m venv venv
-```
-
-### 2. 激活虚拟环境
-Windows:
-```bash
-.\venv\Scripts\activate
-```
-
-macOS/Linux:
-```bash
-source venv/bin/activate
-```
-
-### 3. 安装依赖
-```bash
-pip install pytest pytest-html
+├── app/
+│   └── seat_lock.py      # 核心系统类 (35行)
+├── tests/
+│   └── test_seat_lock.py # pytest测试 (30行)
+├── run_tests.py          # 独立测试脚本 (55行)
+└── report.html           # HTML测试报告
 ```
 
 ## 运行测试
 
-### 方法1: 使用 pytest (推荐)
+### 方式1: 独立脚本
 ```bash
-# VS Code 中运行
-Ctrl+Shift+P → Python: Configure Tests → pytest → tests/
-
-# 生成 HTML 报告
-pytest --html=report.html --self-contained-html
+python run_tests.py
 ```
 
-### 方法2: 直接运行测试文件
+### 方式2: pytest
 ```bash
-python tests/test_seat_lock.py
+pytest tests/test_seat_lock.py -v
+```
+
+### 方式3: 生成HTML报告
+```bash
+pytest tests/test_seat_lock.py -v --html=report.html --self-contained-html
 ```
 
 ## 测试用例
 
-| 测试ID | 测试场景 | 验证点 |
-|--------|----------|--------|
-| test_lock_and_expire | 锁定座位并测试过期 | 座位锁定后过期自动解锁 |
-| test_relock_after_expire | 过期后重新锁定 | 过期后其他用户可以重新锁定 |
-| test_unlock | 解锁座位 | 手动解锁功能正常工作 |
-| test_lock_already_locked | 锁定已锁定座位 | 已锁定座位不能被其他用户锁定 |
-| test_multiple_seats | 多座位管理 | 系统可以同时管理多个座位 |
+| 编号 | 测试名称 | 测试内容 |
+|------|---------|---------|
+| 1 | test_lock_and_expire | 锁定座位并验证超时自动解锁 |
+| 2 | test_relock_after_expire | 验证过期后可重新锁定 |
+| 3 | test_unlock | 测试手动解锁功能 |
+| 4 | test_lock_already_locked | 验证不能重复锁定同一座位 |
+| 5 | test_multiple_seats | 测试多座位并发管理 |
 
-## 核心代码
+## API使用
 
-### SeatLockSystem 类
 ```python
-class SeatLockSystem:
-    def __init__(self):
-        self.locked_seats = {}
-        self.timeout = 60
-    
-    def lock(self, seat_id, user):
-        # 锁定座位
-        pass
-    
-    def is_locked(self, seat_id):
-        # 检查座位是否锁定
-        pass
-    
-    def unlock(self, seat_id):
-        # 解锁座位
-        pass
+from app.seat_lock import SeatLockSystem
+
+# 创建系统实例
+system = SeatLockSystem(timeout=60)
+
+# 锁定座位
+system.lock("A1", "user1")  # 返回True表示成功
+
+# 检查状态
+system.is_locked("A1")  # 返回True/False
+
+# 获取信息
+info = system.get_lock_info("A1")  # 返回{"user": "user1", "expire": timestamp}
+
+# 解锁
+system.unlock("A1")  # 返回True表示成功
 ```
 
-## 预期输出
+## 测试结果
+✅ 所有测试通过 (5/5)
+⏱️ 测试时间: 0.04s
 
-```
-============================================================
-  座位锁定系统测试
-============================================================
-
-✅ 测试通过: test_lock_and_expire
-✅ 测试通过: test_relock_after_expire
-✅ 测试通过: test_unlock
-✅ 测试通过: test_lock_already_locked
-✅ 测试通过: test_multiple_seats
-
-============================================================
-  所有测试通过! ✅
-============================================================
-```
-
-## 学习要点
-
-1. **Python 虚拟环境**: 使用 venv 创建独立的项目环境
-2. **pytest 框架**: 现代化的 Python 测试框架
-3. **单元测试**: 测试单个功能模块
-4. **断言验证**: 使用 assert 进行结果验证
-5. **测试报告**: 生成 HTML 格式的测试报告
-
-## 参考资料
-- [pytest 官方文档](https://docs.pytest.org/)
-- [Python 官方文档](https://docs.python.org/zh-cn/3/)
+## 技术栈
+- Python 3.14
+- pytest 8.4.2
+- 纯Python标准库（无额外依赖）
